@@ -9,6 +9,7 @@ export const Toolbar: React.FC = () => {
         { id: 'select', label: 'Select (V)' },
         { id: 'point', label: 'Point' },
         { id: 'line', label: 'Line' },
+        { id: 'polygon', label: 'Polygon' },
         { id: 'cube', label: 'Cube' },
         { id: 'pyramid', label: 'Pyramid' }
     ] as const;

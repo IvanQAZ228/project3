@@ -2,6 +2,7 @@ import React from 'react';
 import { useGraphStore } from '../../store/useGraphStore';
 import { PointMesh } from './meshes/PointMesh';
 import { LineMesh } from './meshes/LineMesh';
+import { FaceMesh } from './meshes/FaceMesh';
 import { SolidMesh } from './meshes/SolidMesh';
 
 export const ObjectRenderer: React.FC = () => {
@@ -15,6 +16,9 @@ export const ObjectRenderer: React.FC = () => {
                 }
                 if (node.type === 'line') {
                     return <LineMesh key={node.id} node={node as any} />;
+                }
+                if (node.type === 'face') {
+                    return <FaceMesh key={node.id} node={node as any} />;
                 }
                 if (node.type === 'solid') {
                     return <SolidMesh key={node.id} node={node as any} />;

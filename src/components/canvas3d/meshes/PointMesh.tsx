@@ -40,45 +40,31 @@ export const PointMesh: React.FC<PointMeshProps> = ({ node }) => {
 
     return (
         <>
-            {isSelected && activeTool === 'select' ? (
+            <mesh
+                ref={meshRef}
+                position={[node.position.x, node.position.y, node.position.z]}
+                onPointerDown={handlePointerDown}
+                onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
+                onPointerOut={() => setHovered(false)}
+            >
+                <sphereGeometry args={[isSelected ? 0.2 : 0.15, 16, 16]} />
+                <meshStandardMaterial color={isSelected ? "#ff3366" : (hovered ? "#ff6699" : "#4a90e2")} />
+
+                {/* Label */}
+                <Html center position={[0, 0.4, 0]}>
+                    <div className="bg-white/80 px-1 rounded text-xs font-bold text-gray-800 pointer-events-none select-none">
+                        {node.name}
+                    </div>
+                </Html>
+            </mesh>
+
+            {isSelected && activeTool === 'select' && meshRef.current && (
                 <TransformControls
+                    object={meshRef.current as any}
                     mode="translate"
                     onObjectChange={handleDrag}
-                >
-                    <mesh
-                        ref={meshRef}
-                        position={[node.position.x, node.position.y, node.position.z]}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <sphereGeometry args={[0.2, 16, 16]} />
-                        <meshStandardMaterial color="#ff3366" />
-
-                        {/* Label */}
-                        <Html center position={[0, 0.4, 0]}>
-                            <div className="bg-white/80 px-1 rounded text-xs font-bold text-gray-800 pointer-events-none select-none">
-                                {node.name}
-                            </div>
-                        </Html>
-                    </mesh>
-                </TransformControls>
-            ) : (
-                <mesh
-                    ref={meshRef}
-                    position={[node.position.x, node.position.y, node.position.z]}
-                    onPointerDown={handlePointerDown}
-                    onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
-                    onPointerOut={() => setHovered(false)}
-                >
-                    <sphereGeometry args={[0.15, 16, 16]} />
-                    <meshStandardMaterial color={hovered ? "#ff6699" : "#4a90e2"} />
-
-                    {/* Label */}
-                    <Html center position={[0, 0.4, 0]}>
-                        <div className="bg-white/80 px-1 rounded text-xs font-bold text-gray-800 pointer-events-none select-none">
-                            {node.name}
-                        </div>
-                    </Html>
-                </mesh>
+                    onMouseUp={() => {}} // dummy to satisfy TS if needed, we rely on Drei's makeDefault in CameraManager to auto-disable
+                />
             )}
         </>
     );

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type ToolType = 'select' | 'point' | 'line' | 'cube' | 'pyramid';
+export type ToolType = 'select' | 'point' | 'line' | 'polygon' | 'cube' | 'pyramid';
 
 interface ToolState {
     activeTool: ToolType;

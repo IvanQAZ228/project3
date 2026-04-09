@@ -1,4 +1,4 @@
-export type NodeType = 'point' | 'line' | 'plane' | 'solid';
+export type NodeType = 'point' | 'line' | 'face' | 'plane' | 'solid';
 
 export interface IVector3 {
     x: number;
@@ -26,10 +26,17 @@ export interface ILineNode extends IBaseNode {
     endId: string;
 }
 
+export interface IFaceNode extends IBaseNode {
+    type: 'face';
+    pointIds: string[]; // Ordered list of points forming the polygon
+}
+
 export type SolidType = 'cube' | 'pyramid';
 
 export interface ISolidNode extends IBaseNode {
     type: 'solid';
     solidType: SolidType;
-    pointIds: string[]; // For cube: 3 points (p1, p2 for base edge, p3 for direction/plane). Pyramid: base point, tip point etc.
+    pointIds: string[];
+    lineIds: string[];
+    faceIds: string[];
 }

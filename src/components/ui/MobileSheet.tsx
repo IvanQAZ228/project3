@@ -10,6 +10,7 @@ export const MobileSheet: React.FC = () => {
         { id: 'select', label: 'Select' },
         { id: 'point', label: 'Point' },
         { id: 'line', label: 'Line' },
+        { id: 'polygon', label: 'Polygon' },
         { id: 'cube', label: 'Cube' },
         { id: 'pyramid', label: 'Pyramid' }
     ] as const;

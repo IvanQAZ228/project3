@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { IBaseNode, IPointNode, ILineNode, ISolidNode, SolidType, IVector3 } from '../types/graph.types';
+import type { IBaseNode, IPointNode, ILineNode, IFaceNode, ISolidNode, SolidType, IVector3 } from '../types/graph.types';
 import { v4 as uuidv4 } from 'uuid';
 
 interface GraphState {
@@ -8,7 +8,8 @@ interface GraphState {
     pointCounter: number;
     addPoint: (position: IVector3) => IPointNode;
     addLine: (startId: string, endId: string) => ILineNode;
-    addSolid: (solidType: SolidType, pointIds: string[]) => ISolidNode;
+    addFace: (pointIds: string[]) => IFaceNode;
+    addSolid: (solidType: SolidType, pointIds: string[], lineIds: string[], faceIds: string[]) => ISolidNode;
     updatePointPosition: (id: string, position: IVector3) => void;
     selectNode: (id: string | null) => void;
     deleteNode: (id: string) => void;
@@ -80,7 +81,32 @@ export const useGraphStore = create<GraphState>((set, get) => ({
         return newNode;
     },
 
-    addSolid: (solidType, pointIds) => {
+    addFace: (pointIds) => {
+        const id = uuidv4();
+        const newNode: IFaceNode = {
+            id,
+            type: 'face',
+            name: `Face_${id.substring(0, 4)}`,
+            visible: true,
+            pointIds,
+            dependencies: [...pointIds],
+            dependents: []
+        };
+
+        set((state) => {
+            const newNodes = { ...state.nodes, [id]: newNode };
+            pointIds.forEach(pId => {
+                if (newNodes[pId]) {
+                    newNodes[pId] = { ...newNodes[pId], dependents: [...newNodes[pId].dependents, id] };
+                }
+            });
+            return { nodes: newNodes };
+        });
+
+        return newNode;
+    },
+
+    addSolid: (solidType, pointIds, lineIds, faceIds) => {
         const id = uuidv4();
         const newNode: ISolidNode = {
             id,
@@ -89,16 +115,18 @@ export const useGraphStore = create<GraphState>((set, get) => ({
             name: `${solidType.charAt(0).toUpperCase() + solidType.slice(1)}_${id.substring(0, 4)}`,
             visible: true,
             pointIds,
-            dependencies: pointIds,
+            lineIds,
+            faceIds,
+            dependencies: [...pointIds, ...lineIds, ...faceIds],
             dependents: []
         };
 
         set((state) => {
             const newNodes = { ...state.nodes, [id]: newNode };
 
-            pointIds.forEach(pId => {
-                if (newNodes[pId]) {
-                    newNodes[pId] = { ...newNodes[pId], dependents: [...newNodes[pId].dependents, id] };
+            [...pointIds, ...lineIds, ...faceIds].forEach(depId => {
+                if (newNodes[depId]) {
+                    newNodes[depId] = { ...newNodes[depId], dependents: [...newNodes[depId].dependents, id] };
                 }
             });
 

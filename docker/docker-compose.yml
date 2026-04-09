@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  stereomath-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: stereomath_prod
+    ports:
+      - "8080:80"
+    restart: unless-stopped

@@ -5,7 +5,11 @@ import { PropertiesPanel } from './PropertiesPanel';
 import { MobileSheet } from './MobileSheet';
 import { Scene3D } from '../canvas3d/Scene3D';
 
+import { useShortcuts } from '../../hooks/useShortcuts';
+
 export const Layout: React.FC = () => {
+    useShortcuts();
+
     return (
         <div className="flex flex-col h-screen w-screen overflow-hidden bg-white text-gray-800 font-sans">
             <div className="hidden md:block">
